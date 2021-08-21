@@ -1,15 +1,16 @@
-from airflow.hooks.http_hook import HttpHook
+from airflow.providers.http.hooks.http import HttpHook
 import requests
 import json
 
+
 class TwitterHook(HttpHook):
 
-    def __init__(self, query, conn_id = None, start_time = None, end_time = None):
+    def __init__(self, query, http_conn_id = None, start_time = None, end_time = None):
         self.query = query
-        self.conn_id = conn_id or "twitter_default"
+        self.http_conn_id = http_conn_id or "twitter_default"
         self.start_time = start_time
         self.end_time = end_time
-        super().__init__(http_conn_id=self.conn_id)
+        super().__init__(http_conn_id=self.http_conn_id)
 
     def create_url(self):
         query = self.query
