@@ -5,9 +5,9 @@ import json
 
 class TwitterHook(HttpHook):
 
-    def __init__(self, query, http_conn_id = None, start_time = None, end_time = None):
+    def __init__(self, query, http_conn_id: str, start_time = None, end_time = None):
         self.query = query
-        self.http_conn_id = http_conn_id or "twitter_default"
+        self.http_conn_id = http_conn_id
         self.start_time = start_time
         self.end_time = end_time
         super().__init__(http_conn_id=self.http_conn_id)
@@ -55,7 +55,3 @@ class TwitterHook(HttpHook):
         url = self.create_url()
 
         yield from self.paginate(url, session)
-
-if __name__ == "__main__":
-    for pg in TwitterHook("AluraOnline").run():
-        print(json.dumps(pg, indent=4, sort_keys=True))
