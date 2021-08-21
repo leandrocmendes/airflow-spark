@@ -4,12 +4,22 @@ from airflow.models.taskinstance import TaskInstance
 from hooks.twitter_hook import TwitterHook
 import json
 from datetime import datetime
+from pathlib import Path
+from os.path import join
 
 class TwitterOperator(BaseOperator):
+
+    template_fields = [
+        "query",
+        "file_path",
+        "start_time",
+        "end_time"
+    ]
 
     def __init__(
         self,  
         query,
+        file_path,
         http_conn_id: str,
         start_time = None,
         end_time = None,
@@ -18,12 +28,17 @@ class TwitterOperator(BaseOperator):
     ):
         super().__init__(*args, **kwargs)
         self.query = query,
+        self.file_path = file_path,
         self.http_conn_id = http_conn_id,
         self.start_time = start_time,
         self.end_time = end_time,
 
+    def create_parent_folder(self):
+        print(self.file_path)
+        print(''.join(self.file_path))
+        Path(Path(''.join(self.file_path)).parent).mkdir(parents=True, exist_ok=True)
+
     def execute(self, context):
-        print(self.start_time)
         hook = TwitterHook(
             query=''.join(self.query), 
             http_conn_id=''.join(self.http_conn_id),
@@ -31,15 +46,25 @@ class TwitterOperator(BaseOperator):
             end_time=''.join(self.end_time),
         )
 
-        for pg in hook.run():
-            print(json.dumps(pg, indent=4, sort_keys=True))
+        self.create_parent_folder()
+
+        with open(''.join(self.file_path), "w") as output_file:
+            for pg in hook.run():
+                print(json.dump(pg, output_file,ensure_ascii=False))
+                output_file.write("\n")
 
 
 if __name__ == "__main__":
      with DAG(dag_id="TwitterTest", start_date=datetime.now()) as dag:
          to = TwitterOperator(
              query="AluraOnline", 
-             task_id= "test_run", 
+             task_id="test_run", 
+             file_path= join(
+                "/opt/airflow/datalake",
+                "twitter_aluraonline",
+                "extract_date={{ ds }}",
+                "AluraOnline_{{ ds_nodash }}.json"
+                ),
              http_conn_id="twitter_default", 
              start_time="", 
              end_time="",
@@ -48,4 +73,4 @@ if __name__ == "__main__":
              task=to,
              execution_date=datetime.now(),
          )
-         to.execute(ti.get_template_context())
+         ti.run()
