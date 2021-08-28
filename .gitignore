@@ -126,3 +126,14 @@ dmypy.json
 
 #exclude logs
 logs/
+datalake/
+airflow/airflow-scheduler.err
+airflow/airflow-scheduler.out
+airflow/airflow-scheduler.pid
+airflow/airflow-webserver.err
+airflow/airflow-webserver.out
+airflow/airflow-webserver.pid
+airflow/airflow-webserver-monitor.pid
+airflow/airflow.cfg
+airflow/airflow.db
+airflow/webserver_config.py
