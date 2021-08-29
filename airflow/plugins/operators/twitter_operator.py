@@ -5,7 +5,6 @@ from hooks.twitter_hook import TwitterHook
 import json
 from datetime import datetime
 from pathlib import Path
-from os.path import join
 
 class TwitterOperator(BaseOperator):
 
@@ -35,12 +34,9 @@ class TwitterOperator(BaseOperator):
 
     def create_parent_folder(self):
         try:
-            print(self.file_path)
-            print(''.join(self.file_path))
             Path(Path(''.join(self.file_path)).parent).mkdir(parents=True, exist_ok=True)
         except AssertionError as error:
             print(error)
-            print("1")
 
     def execute(self, context):
         hook = TwitterHook(
@@ -53,32 +49,9 @@ class TwitterOperator(BaseOperator):
         try:
             self.create_parent_folder()
             
-            print(self.file_path)
             with open(''.join(self.file_path), "w") as output_file:
                 for pg in hook.run():
                     print(json.dump(pg, output_file,ensure_ascii=False))
                     output_file.write("\n")
         except AssertionError as error:
             print(error)
-            print("2")
-
-if __name__ == "__main__":
-     with DAG(dag_id="TwitterTest", start_date=datetime.now()) as dag:
-         to = TwitterOperator(
-             query="AluraOnline", 
-             task_id="test_run", 
-             file_path= join(
-                "/opt/airflow/datalake",
-                "twitter_aluraonline",
-                "extract_date={{ ds }}",
-                "AluraOnline_{{ ds_nodash }}.json"
-                ),
-             http_conn_id="twitter_default", 
-             start_time="", 
-             end_time="",
-         )
-         ti = TaskInstance(
-             task=to,
-             execution_date=datetime.now(),
-         )
-         ti.run()

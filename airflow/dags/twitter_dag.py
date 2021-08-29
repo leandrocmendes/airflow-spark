@@ -16,7 +16,7 @@ with DAG(
         task_id="twitter_aluraonline",
         query="AluraOnline",
         file_path= join(
-                "/home/leandro/Documents/workspace/airflow/datalake",
+                "/home/leandro/Documents/workspace/datalake",
                 "twitter_aluraonline",
                 "extract_date={{ ds }}",
                 "AluraOnline_{{ ds_nodash }}.json"

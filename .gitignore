@@ -125,8 +125,7 @@ venv.bak/
 dmypy.json
 
 #exclude logs
-logs/
-datalake/
+airflow/logs/
 airflow/airflow-scheduler.err
 airflow/airflow-scheduler.out
 airflow/airflow-scheduler.pid
@@ -137,3 +136,4 @@ airflow/airflow-webserver-monitor.pid
 airflow/airflow.cfg
 airflow/airflow.db
 airflow/webserver_config.py
+datalake/
