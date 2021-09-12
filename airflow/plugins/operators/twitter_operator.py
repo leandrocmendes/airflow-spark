@@ -32,6 +32,9 @@ class TwitterOperator(BaseOperator):
         self.start_time = start_time,
         self.end_time = end_time,
 
+        print(self.start_time)
+        print(self.end_time)
+
     def create_parent_folder(self):
         try:
             Path(Path(''.join(self.file_path)).parent).mkdir(parents=True, exist_ok=True)
