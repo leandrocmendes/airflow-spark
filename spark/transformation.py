@@ -1,5 +1,6 @@
 from os.path import join
 import argparse
+import sys
 from pyspark.sql import SparkSession
 from pyspark.sql import functions as f
 
@@ -43,6 +44,8 @@ def twitter_transform(spark, src, dest, process_date):
     export_json(user_df, table_dest.format(table_name="user"))
 
 if __name__ == "__main__":
+    print("teste")
+    print (sys.argv[1:])
     parser = argparse.ArgumentParser(
         description="Spark Twitter Transformation"
     )
